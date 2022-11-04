@@ -22,6 +22,8 @@ import tensorflow.compat.v1 as tf1
 from .utils.tf_utils import *
 from .utils import FkLayout
 from tensorflow.python.framework.ops import EagerTensor
+import numpy as np
+
 
 class Rotation(tf.Tensor):
 	pass
@@ -131,18 +133,11 @@ class Frame(object):
 
 		if isinstance(m, tf.Variable): _m = tf.identity(m)
 		else: _m = m
-
-
 		self.p = p
 		self.m = _m
 
 	def fix_it(self):
-		# return self
-		sess = tf.compat.v1.get_default_session()
-
-		p, m = sess.run([self.p, self.m])
-
-		return Frame(tf.convert_to_tensor(p, tf.float32), tf.convert_to_tensor(m, tf.float32))
+		return Frame(self.p, self.m)
 
 	@property
 	def is_batch(self):

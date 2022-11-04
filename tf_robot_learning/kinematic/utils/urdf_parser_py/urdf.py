@@ -160,8 +160,8 @@ class Material(xmlr.Object):
 		self.texture = texture
 	
 	def check_valid(self):
-		if self.color is None and self.texture is None:
-			xmlr.on_error("Material has neither a color nor texture")
+		pass #	if self.color is None and self.texture is None:
+	#		xmlr.on_error("Material has neither a color nor texture")
 
 xmlr.reflect(Material, params = [
 	name_attribute,

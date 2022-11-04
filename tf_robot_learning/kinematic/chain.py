@@ -175,13 +175,7 @@ class Chain(object):
 		:param proj rotation matrix [3, 3]
 		:return:
 		"""
-		sess = sess if sess is not None else tf.compat.v1.get_default_session()
-
-		if isinstance(xs, np.ndarray):
-			_xs = xs
-		else:
-			_xs = sess.run(xs, feed_dict=feed_dict)  # [batch_size, joint, dim]
-
+		_xs = np.array(xs)
 		rng = range(0, _xs.shape[0]) if rng is None else rng
 
 		label = kwargs.pop('label', None)
@@ -507,20 +501,8 @@ class ChainDict(OrderedDict, Chain):
 	def plot(self, xs=None, qs=None, *args, **kwargs):
 		if xs is None: raise NotImplementedError
 
-		sess = kwargs.get('sess', tf.compat.v1.get_default_session())
-		feed_dict = kwargs.get('feed_dict', {})
-
-		# evaluating all the chains here in common is because of random seed that is
-		# different for each chains and results in disconnected robot
-
-		if isinstance(list(xs.values())[0], np.ndarray):
-			_xs = xs
-		else:
-			_xs = {name: val for name, val in
-		 		zip(self, sess.run([xs[name] for name in self], feed_dict=feed_dict))}
-
 		for name, chain in self.items():
-			chain.plot(xs=_xs[name], *args, **kwargs)
+			chain.plot(xs=xs[name], *args, **kwargs)
 			kwargs.pop('label', None)
 
 	def jacobian(self, q, n=0, layout=FkLayout.xm, floating_base=None, name=None):
